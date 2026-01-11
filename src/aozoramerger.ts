@@ -12,18 +12,14 @@ import { myConst, myNums } from './consts/globalvariables';
 
 /// Modules
 import * as path from 'node:path'; // path
-<<<<<<< HEAD:src/aozoramerger.ts
 import { existsSync } from 'node:fs'; // file system
 import { readFile, writeFile, readdir, cp } from 'node:fs/promises'; // file system (Promise)
-=======
-import { createWriteStream, existsSync } from 'node:fs'; // file system
-import { readFile, writeFile, readdir } from 'node:fs/promises'; // file system (Promise)
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59:src/aozorarecorder.ts
 import { BrowserWindow, app, ipcMain, Tray, Menu, nativeImage } from 'electron'; // electron
 import NodeCache from "node-cache"; // node-cache
 import ELLogger from './class/ElLogger'; // logger
 import Dialog from './class/ElDialog0721'; // dialog
 import FileManage from './class/ELFileManage1025'; // file operation
+import Ffmpeg from './class/ElFfmpeg'; // mdkir
 
 // log level
 const LOG_LEVEL: string = myConst.LOG_LEVEL ?? 'all';
@@ -33,6 +29,8 @@ const logger: ELLogger = new ELLogger(myConst.COMPANY_NAME, myConst.APP_NAME, LO
 const dialogMaker: Dialog = new Dialog(logger);
 // filemanage instance
 const fileManager = new FileManage(logger);
+// ffmpeg instance
+const ffmpegManager = new Ffmpeg(logger);
 // cache instance
 const cacheMaker: NodeCache = new NodeCache();
 
@@ -240,7 +238,6 @@ ipcMain.on("beforeready", async (event: any, _) => {
   });
 });
 
-<<<<<<< HEAD:src/aozoramerger.ts
 // merge
 ipcMain.on('merge', async (event: any, _) => {
   try {
@@ -329,83 +326,6 @@ ipcMain.on('merge', async (event: any, _) => {
             // status
             event.sender.send('errorUpdate', error);
           }
-=======
-// record
-ipcMain.on('record', async (event: any, arg: any) => {
-  try {
-    logger.info('ipc: record started.');
-    // language
-    const language: string = cacheMaker.get('language') ?? 'japanese';
-    // connection test
-    const testResult: string = await testRequest();
-    // test result
-    if (testResult == 'ng') {
-      // japanese
-      if (language == 'japanese') {
-        throw new Error('通信エラー');
-      } else {
-        throw new Error('communication error');
-      }
-    }
-    logger.debug('ipc: test is ok.');
-    // subdir list
-    const allDirents: any = await readdir(path.join(fileRootPath, 'source'), { withFileTypes: true });
-    // remove all files
-    await fileManager.rmDir(path.join(fileRootPath, 'partial'));
-    // if empty
-    if (allDirents.length == 0) {
-      // japanese
-      if (language == 'japanese') {
-        throw new Error('file/sourceフォルダが空です');
-      } else {
-        throw new Error('file/source directory is empty');
-      }
-    }
-    // file list
-    const files: string[] = await readdir(path.join(fileRootPath, 'source'));
-    // loop
-    await Promise.allSettled(files.map(async (fl: string): Promise<void> => {
-      return new Promise(async (resolve1, reject1) => {
-        try {
-          logger.silly(`record: operating ${fl}`);
-          // filename
-          const fileId: string = path.parse(fl).name;
-          // save path
-          const outDirPath: string = path.join(fileRootPath, 'partial', fileId);
-          // make dir
-          if (!existsSync(outDirPath)) {
-            await fileManager.mkDir(outDirPath);
-            logger.silly(`finished making.. ${outDirPath}`);
-          }
-          // file path
-          const filePath: string = path.join(fileRootPath, 'source', fl);
-          // file reading
-          const txtdata: Buffer = await readFile(filePath);
-          // decode
-          const str: string = iconv.decode(txtdata, 'UTF8');
-          logger.silly('record: char decoding finished.');
-          // over 10000
-          if (str.length > 10000) {
-            // japanese
-            if (language == 'japanese') {
-              throw new Error('1万文字を超えています');
-            } else {
-              throw new Error('over 10,000 words.');
-            }
-          }
-          // filename
-          const tmpFileName = `${path.parse(fl).name}.wav`;
-          // synthesis request
-          await synthesisRequest(tmpFileName, str, arg, outDirPath);
-          // complete
-          resolve1();
-
-        } catch (err3: unknown) {
-          // error
-          logger.error(err3);
-          // reject
-          reject1();
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59:src/aozorarecorder.ts
         }
       });
     }));
@@ -426,7 +346,6 @@ ipcMain.on('record', async (event: any, arg: any) => {
     });
     // finish message
     dialogMaker.showmessage('info', finishedMessage);
-<<<<<<< HEAD:src/aozoramerger.ts
     logger.info('ipc: operation finished.');
 
   } catch (e: unknown) {
@@ -460,13 +379,6 @@ ipcMain.on('delete', async (_, __) => {
     logger.info('ipc: operation finished.');
 
   } catch (e: unknown) {
-=======
-    // complete
-    logger.info('ipc: operation finished.');
-
-  } catch (e: unknown) {
-    // error
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59:src/aozorarecorder.ts
     logger.error(e);
     // error
     if (e instanceof Error) {

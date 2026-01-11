@@ -10,7 +10,6 @@
 </head>
 
 <body>
-<<<<<<< HEAD
   <h1 id="maintitle">Aozora Merger</h1>
   <div class="operation_area">
     <h3 id="merge">Merge</h3>
@@ -19,16 +18,6 @@
   <div class="operation_area">
     <h3 id="delete">Delete</h3>
     <button id="delete_button" class="button-g button-wide" value="delete" onclick="gotoDelete();">Delete</button>
-=======
-  <h1 id="maintitle">Aozora Recorder</h1>
-  <div class="operation_area">
-    <h3 id="record">Record</h3>
-    <div id="select_box" class="cp_ipselect">
-      <select id="voicemodel" name="voicemodel">
-      </select>
-    </div>
-    <button id="record_button" class="button-g button-wide" value="record" onclick="gotoRecord();">Record</button>
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59
   </div>
   <div class="config_area">
     <h3 id="config">Config</h3>
@@ -51,40 +40,25 @@
   <script charset="UTF-8">
     /// constants
     // japanese
-<<<<<<< HEAD
     const APPNAME_STR_JA = '青空マージャ―';
     const MERGE_STR_JA = 'ファイル結合';
     const DELETE_STR_JA = 'クリア';
-=======
-    const APPNAME_STR_JA = '青空レコーダ';
-    const RECORD_STR_JA = '音声合成';
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59
     const STATUS_STR_JA = 'ステータス';
     const CONFIG_STR_JA = '設定';
     const EXIT_STR_JA = '終了';
     // english
-<<<<<<< HEAD
     const APPNAME_STR_EN = 'Aozora Merger';
     const MERGE_STR_EN = 'Merge';
     const DELETE_STR_EN = 'Delete';
-=======
-    const APPNAME_STR_EN = 'Aozora Recorder';
-    const RECORD_STR_EN = 'Record';
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59
     const STATUS_STR_EN = 'Status';
     const CONFIG_STR_EN = 'Config';
     const EXIT_STR_EN = 'Exit';
     /// doms
     const maintitleDom = document.getElementById("maintitle");
-<<<<<<< HEAD
     const mergeDom = document.getElementById('merge');
     const mergeButtonDom = document.getElementById('merge_button');
     const deleteDom = document.getElementById('delete');
     const deleteButtonDom = document.getElementById('delete_button');
-=======
-    const recordDom = document.getElementById('record');
-    const recordButtonDom = document.getElementById('record_button');
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59
     const statusDom = document.getElementById('status');
     const errorDom = document.getElementById('error');
     const statusHeadDom = document.getElementById('statushead');
@@ -132,7 +106,6 @@
       }
     });
 
-<<<<<<< HEAD
     // start merging
     const gotoMerge = () => {
       try {
@@ -152,16 +125,6 @@
         console.log('deleting');
         // delete
         window.api.send('delete');
-=======
-    // start recording
-    const gotoRecord = () => {
-      try {
-        console.log('recording');
-        // voice selected
-        const tmpVoiceModel = selectVoiceDom.value;
-        // record
-        window.api.send('record', tmpVoiceModel);
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59
 
       } catch (e) {
         // error
@@ -201,15 +164,10 @@
       if (lang == 'japanese') {
         document.title = APPNAME_STR_JA;
         maintitleDom.innerHTML = APPNAME_STR_JA;
-<<<<<<< HEAD
         mergeDom.innerHTML = MERGE_STR_JA;
         mergeButtonDom.innerHTML = MERGE_STR_JA;
         deleteDom.innerHTML = DELETE_STR_JA;
         deleteButtonDom.innerHTML = DELETE_STR_JA;
-=======
-        recordDom.innerHTML = RECORD_STR_JA;
-        recordButtonDom.innerHTML = RECORD_STR_JA;
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59
         statusHeadDom.innerHTML = STATUS_STR_JA;
         configDom.innerHTML = CONFIG_STR_JA;
         configButtonDom.innerHTML = CONFIG_STR_JA;
@@ -219,15 +177,10 @@
       } else {
         document.title = APPNAME_STR_EN;
         maintitleDom.innerHTML = APPNAME_STR_EN;
-<<<<<<< HEAD
         mergeDom.innerHTML = MERGE_STR_EN;
         mergeButtonDom.innerHTML = MERGE_STR_EN;
         deleteDom.innerHTML = DELETE_STR_EN;
         deleteButtonDom.innerHTML = DELETE_STR_EN;
-=======
-        recordDom.innerHTML = RECORD_STR_EN;
-        recordButtonDom.innerHTML = RECORD_STR_EN;
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59
         statusHeadDom.innerHTML = STATUS_STR_EN;
         configDom.innerHTML = CONFIG_STR_EN;
         configButtonDom.innerHTML = CONFIG_STR_EN;
