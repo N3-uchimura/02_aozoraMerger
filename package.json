@@ -1,19 +1,9 @@
 {
-<<<<<<< HEAD
   "name": "aozora-merger",
   "productName": "aozora-merger",
   "version": "1.0.0",
   "description": "application for recording aozora books.",
-  "main": "build/aozoramerger.js",
-=======
-  "name": "aozora-recorder",
-  "productName": "aozora-recorder personal",
-  "version": "1.2.0",
-  "private": true,
-  "description": "personal application for recording aozora books.",
-  "main": "build/aozorarecorder.js",
->>>>>>> a640f24e079d241e3fe8b8564bd0c6dd32b71e59
-  "scripts": {
+  "main": "build/aozoramerger.js",  "scripts": {
     "build": "tsc && chcp 65001",
     "start": "npm run build && electron .",
     "build-win": "npm run build && electron-builder --win --x64"
