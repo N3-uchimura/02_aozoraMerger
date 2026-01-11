@@ -1,24 +1,20 @@
 /*
- * aozorarecorder.ts
+ * aozoramerger.ts
  *
- * aozorarecorder - aozora recording tools -
+ * aozoramerger - aozora merging tools -
  **/
 
 'use strict';
 
 /// Constants
 // namespace
-import { myConst, myNums, mySynthesis } from './consts/globalvariables';
+import { myConst, myNums } from './consts/globalvariables';
 
 /// Modules
 import * as path from 'node:path'; // path
-import { createWriteStream, existsSync } from 'node:fs'; // file system
+import { existsSync } from 'node:fs'; // file system
 import { readFile, writeFile, readdir, cp } from 'node:fs/promises'; // file system (Promise)
 import { BrowserWindow, app, ipcMain, Tray, Menu, nativeImage } from 'electron'; // electron
-import axios from 'axios'; // http communication
-import iconv from 'iconv-lite'; // Text converter
-import { promisify } from 'util'; // promisify
-import * as stream from 'stream'; // steramer
 import NodeCache from "node-cache"; // node-cache
 import ELLogger from './class/ElLogger'; // logger
 import Dialog from './class/ElDialog0721'; // dialog
@@ -168,7 +164,7 @@ app.on('ready', async () => {
     // make root dir
     await fileManager.mkDir(fileRootPath);
     // make file dir
-    await fileManager.mkDirAll([path.join(fileRootPath, 'source'), path.join(fileRootPath, 'output'), path.join(fileRootPath, 'backup'), path.join(fileRootPath, 'partial')]);
+    await fileManager.mkDirAll([path.join(fileRootPath, 'output'), path.join(fileRootPath, 'backup'), path.join(fileRootPath, 'partial')]);
     // icons
     const icon: Electron.NativeImage = nativeImage.createFromPath(path.join(globalRootPath, 'assets', 'aozora.ico'));
     // tray
@@ -233,130 +229,13 @@ app.on('window-all-closed', () => {
 // ready
 ipcMain.on("beforeready", async (event: any, _) => {
   logger.info("app: beforeready app");
-  // models
-  let models: any = [];
-  // get all models
-  const modelsArray: any = await getModelsRequest();
-  // set models
-  modelsArray.forEach((model: any) => {
-    models.push(model[1].model_path.split('\\')[1]);
-  })
+
   // language
   const language = cacheMaker.get('language') ?? '';
   // be ready
   event.sender.send("ready", {
     language: language,
-    models: models,
   });
-});
-
-// record
-ipcMain.on('record', async (event: any, arg: any) => {
-  try {
-    logger.info('ipc: record started.');
-    // language
-    const language: string = cacheMaker.get('language') ?? 'japanese';
-    // connection test
-    const testResult: string = await testRequest();
-    // test result
-    if (testResult == 'ng') {
-      // japanese
-      if (language == 'japanese') {
-        throw new Error('通信エラー');
-      } else {
-        throw new Error('communication error');
-      }
-    }
-    logger.debug('ipc: test is ok.');
-    // subdir list
-    const allDirents: any = await readdir(path.join(fileRootPath, 'source'), { withFileTypes: true });
-    // remove all files
-    await fileManager.rmDir(path.join(fileRootPath, 'partial'));
-    // if empty
-    if (allDirents.length == 0) {
-      // japanese
-      if (language == 'japanese') {
-        throw new Error('file/sourceフォルダが空です');
-      } else {
-        throw new Error('file/source directory is empty');
-      }
-    }
-    // file list
-    const files: string[] = await readdir(path.join(fileRootPath, 'source'));
-    // loop
-    await Promise.allSettled(files.map(async (fl: string): Promise<void> => {
-      return new Promise(async (resolve1, reject1) => {
-        try {
-          logger.silly(`record: operating ${fl}`);
-          // filename
-          const fileId: string = path.parse(fl).name;
-          // save path
-          const outDirPath: string = path.join(fileRootPath, 'partial', fileId);
-          // make dir
-          if (!existsSync(outDirPath)) {
-            await fileManager.mkDir(outDirPath);
-            logger.silly(`finished making.. ${outDirPath}`);
-          }
-          // file path
-          const filePath: string = path.join(fileRootPath, 'source', fl);
-          // file reading
-          const txtdata: Buffer = await readFile(filePath);
-          // decode
-          const str: string = iconv.decode(txtdata, 'UTF8');
-          logger.silly('record: char decoding finished.');
-          // over 10000
-          if (str.length > 10000) {
-            // japanese
-            if (language == 'japanese') {
-              throw new Error('1万文字を超えています');
-            } else {
-              throw new Error('over 10,000 words.');
-            }
-          }
-          // filename
-          const tmpFileName = `${path.parse(fl).name}.wav`;
-          // synthesis request
-          await synthesisRequest(tmpFileName, str, arg, outDirPath);
-          // complete
-          resolve1();
-
-        } catch (err3: unknown) {
-          // error
-          logger.error(err3);
-          // reject
-          reject1();
-        }
-      });
-    }));
-    // status message
-    let finishedMessage: string = '';
-    // switch on language
-    if (language == 'japanese') {
-      // set finish message
-      finishedMessage = '完了しました';
-    } else {
-      // set finish message
-      finishedMessage = 'Finished.';
-    }
-    // status
-    event.sender.send('statusUpdate', {
-      status: finishedMessage,
-      target: ''
-    });
-    // finish message
-    dialogMaker.showmessage('info', finishedMessage);
-    // complete
-    logger.info('ipc: operation finished.');
-
-  } catch (e: unknown) {
-    // error
-    logger.error(e);
-    // error
-    if (e instanceof Error) {
-      // error message
-      dialogMaker.showmessage('error', e.message);
-    }
-  }
 });
 
 // merge
@@ -608,116 +487,3 @@ ipcMain.on('exit', async () => {
     logger.error(e);
   }
 });
-
-/*
- Functions
-*/
-// synthesis audio
-const synthesisRequest = async (filename: string, text: string, modelname: string, outDir: string): Promise<void> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // pipe
-      const finished = promisify(stream.finished);
-      // query
-      const query: any = new URLSearchParams(mySynthesis.params(text, modelname));
-      // requestURL
-      const requestUrl: string = `http://${myConst.HOSTNAME}:${myNums.PORT}/voice?${query}`;
-      // file path
-      const filePath: string = path.join(outDir, filename);
-      // file writer
-      const writer = createWriteStream(filePath);
-      // GET request
-      await axios({
-        method: 'get',
-        url: requestUrl,
-        responseType: 'stream'
-
-      }).then(async (response: any) => {
-        // pipe
-        await response.data.pipe(writer);
-        // finish recording
-        await finished(writer);
-        // resolve
-        resolve();
-
-      }).catch((err: unknown) => {
-        if (err instanceof Error) {
-          // error
-          throw new Error(err.message);
-        }
-      });
-
-    } catch (e: unknown) {
-      // error
-      logger.error(e);
-      reject();
-    }
-  });
-}
-
-// get models
-const getModelsRequest = async (): Promise<any> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      logger.debug('get models started.');
-      // requestURL
-      const tmpUrl: string = `http://${myConst.HOSTNAME}:${myNums.PORT}/models/info`;
-      // GET request
-      await axios({
-        method: 'get',
-        url: tmpUrl,
-
-      }).then(async (data: any) => {
-        // get model data
-        const pairs: [string, any][] = Object.entries(data.data);
-        // return them
-        resolve(pairs);
-
-      }).catch((err: any) => {
-        if (err instanceof Error) {
-          // error
-          throw new Error(err.message);
-        }
-      });
-
-    } catch (e: unknown) {
-      // error
-      if (e instanceof Error) {
-        // error
-        logger.error(e);
-        reject('ng');
-      }
-    }
-  });
-}
-
-// test
-const testRequest = async (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      logger.debug(`test started.`);
-      // requestURL
-      const tmpUrl: string = `http://${myConst.HOSTNAME}:${myNums.PORT}/docs`;
-      // GET request
-      await axios({
-        method: 'get',
-        url: tmpUrl,
-
-      }).then(async (_: any) => {
-        // test ok
-        resolve('ok');
-
-      }).catch((err: unknown) => {
-        if (err instanceof Error) {
-          // error
-          throw new Error(err.message);
-        }
-      });
-
-    } catch (e: unknown) {
-      // error
-      logger.error(e);
-      reject('ng');
-    }
-  });
-}

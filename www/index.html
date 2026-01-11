@@ -3,23 +3,14 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Aozora Recorder</title>
+  <title>Aozora Merger</title>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline';">
   <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="css/button.css">
 </head>
 
 <body>
-  <h1 id="maintitle">Aozora Recorder</h1>
-  <div class="operation_area">
-    <h3 id="record">Record</h3>
-    <div id="select_box" class="cp_ipselect">
-      <select id="voicemodel" name="voicemodel">
-      </select>
-    </div>
-    <button id="record_button" class="button-g button-wide" value="record" onclick="gotoRecord();">Record</button>
-  </div>
-  <p><i class="arrow down"></i></p>
+  <h1 id="maintitle">Aozora Merger</h1>
   <div class="operation_area">
     <h3 id="merge">Merge</h3>
     <button id="merge_button" class="button-g button-wide" value="merge" onclick="gotoMerge();">Merge</button>
@@ -49,16 +40,14 @@
   <script charset="UTF-8">
     /// constants
     // japanese
-    const APPNAME_STR_JA = '青空レコーダ';
-    const RECORD_STR_JA = '音声合成';
+    const APPNAME_STR_JA = '青空マージャ―';
     const MERGE_STR_JA = 'ファイル結合';
     const DELETE_STR_JA = 'クリア';
     const STATUS_STR_JA = 'ステータス';
     const CONFIG_STR_JA = '設定';
     const EXIT_STR_JA = '終了';
     // english
-    const APPNAME_STR_EN = 'Aozora Recorder';
-    const RECORD_STR_EN = 'Record';
+    const APPNAME_STR_EN = 'Aozora Merger';
     const MERGE_STR_EN = 'Merge';
     const DELETE_STR_EN = 'Delete';
     const STATUS_STR_EN = 'Status';
@@ -66,8 +55,6 @@
     const EXIT_STR_EN = 'Exit';
     /// doms
     const maintitleDom = document.getElementById("maintitle");
-    const recordDom = document.getElementById('record');
-    const recordButtonDom = document.getElementById('record_button');
     const mergeDom = document.getElementById('merge');
     const mergeButtonDom = document.getElementById('merge_button');
     const deleteDom = document.getElementById('delete');
@@ -79,7 +66,6 @@
     const configDom = document.getElementById('config');
     const configButtonDom = document.getElementById('config_button');
     const exitButtonDom = document.getElementById('exit_button');
-    const selectVoiceDom = document.getElementById("voicemodel");
 
     /// ipc
     // before ready
@@ -90,13 +76,6 @@
       console.log('ready');
       // change language
       changeLanguage(arg);
-      // add models
-      arg.models.forEach(md => {
-        const option = document.createElement("option");
-        option.text = md;
-        option.value = md;
-        selectVoiceDom.appendChild(option);
-      });
     });
 
     // update status
@@ -126,21 +105,6 @@
         console.log(e);
       }
     });
-
-    // start recording
-    const gotoRecord = () => {
-      try {
-        console.log('recording');
-        // voice selected
-        const tmpVoiceModel = selectVoiceDom.value;
-        // record
-        window.api.send('record', tmpVoiceModel);
-
-      } catch (e) {
-        // error
-        console.log(e);
-      }
-    }
 
     // start merging
     const gotoMerge = () => {
@@ -200,8 +164,6 @@
       if (lang == 'japanese') {
         document.title = APPNAME_STR_JA;
         maintitleDom.innerHTML = APPNAME_STR_JA;
-        recordDom.innerHTML = RECORD_STR_JA;
-        recordButtonDom.innerHTML = RECORD_STR_JA;
         mergeDom.innerHTML = MERGE_STR_JA;
         mergeButtonDom.innerHTML = MERGE_STR_JA;
         deleteDom.innerHTML = DELETE_STR_JA;
@@ -215,8 +177,6 @@
       } else {
         document.title = APPNAME_STR_EN;
         maintitleDom.innerHTML = APPNAME_STR_EN;
-        recordDom.innerHTML = RECORD_STR_EN;
-        recordButtonDom.innerHTML = RECORD_STR_EN;
         mergeDom.innerHTML = MERGE_STR_EN;
         mergeButtonDom.innerHTML = MERGE_STR_EN;
         deleteDom.innerHTML = DELETE_STR_EN;
