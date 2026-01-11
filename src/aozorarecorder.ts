@@ -13,7 +13,7 @@ import { myConst, myNums, mySynthesis } from './consts/globalvariables';
 /// Modules
 import * as path from 'node:path'; // path
 import { createWriteStream, existsSync } from 'node:fs'; // file system
-import { readFile, writeFile, readdir, cp } from 'node:fs/promises'; // file system (Promise)
+import { readFile, writeFile, readdir } from 'node:fs/promises'; // file system (Promise)
 import { BrowserWindow, app, ipcMain, Tray, Menu, nativeImage } from 'electron'; // electron
 import axios from 'axios'; // http communication
 import iconv from 'iconv-lite'; // Text converter
@@ -23,7 +23,6 @@ import NodeCache from "node-cache"; // node-cache
 import ELLogger from './class/ElLogger'; // logger
 import Dialog from './class/ElDialog0721'; // dialog
 import FileManage from './class/ELFileManage1025'; // file operation
-import Ffmpeg from './class/ElFfmpeg'; // mdkir
 
 // log level
 const LOG_LEVEL: string = myConst.LOG_LEVEL ?? 'all';
@@ -33,8 +32,6 @@ const logger: ELLogger = new ELLogger(myConst.COMPANY_NAME, myConst.APP_NAME, LO
 const dialogMaker: Dialog = new Dialog(logger);
 // filemanage instance
 const fileManager = new FileManage(logger);
-// ffmpeg instance
-const ffmpegManager = new Ffmpeg(logger);
 // cache instance
 const cacheMaker: NodeCache = new NodeCache();
 
@@ -350,156 +347,6 @@ ipcMain.on('record', async (event: any, arg: any) => {
 
   } catch (e: unknown) {
     // error
-    logger.error(e);
-    // error
-    if (e instanceof Error) {
-      // error message
-      dialogMaker.showmessage('error', e.message);
-    }
-  }
-});
-
-// merge
-ipcMain.on('merge', async (event: any, _) => {
-  try {
-    logger.info('ipc: merge mode');
-    // status message
-    let statusmessage: string;
-    // unit
-    let tmpUnit: string;
-    // backup option
-    const backupOption: any = {
-      recursive: true,
-    }
-    // backup all
-    await cp(path.join(fileRootPath, 'partial'), path.join(fileRootPath, 'backup'), backupOption);
-    logger.debug('merge: backup to file/backup dir');
-    // language
-    const language = cacheMaker.get('language') ?? 'japanese';
-    // subdir list
-    const allDirents: any = await readdir(path.join(fileRootPath, 'partial'), { withFileTypes: true });
-    const dirNames: any[] = allDirents.filter((dirent: any) => dirent.isDirectory()).map(({ name }: any) => name);
-    logger.debug(`merge: filepaths are ${dirNames}`);
-    // if empty
-    if (dirNames.length == 0) {
-      // japanese
-      if (language == 'japanese') {
-        throw new Error('対象が空です（file/partial）');
-      } else {
-        throw new Error('file/partial directory is empty');
-      }
-    }
-    // switch on language
-    if (language == 'japanese') {
-      // set finish message
-      statusmessage = '音声マージ中...';
-      tmpUnit = '件';
-    } else {
-      // set finish message
-      statusmessage = 'Merging wavs...';
-      tmpUnit = 'items';
-    }
-    // URL
-    event.sender.send('statusUpdate', {
-      status: statusmessage,
-      target: `${dirNames.length}${tmpUnit}`
-    });
-    // loop
-    await Promise.all(dirNames.map(async (dir: any): Promise<void> => {
-      return new Promise(async (resolve1, reject1) => {
-        try {
-          // target dir path
-          const targetDir: string = path.join(fileRootPath, 'partial', dir);
-          // output dir path
-          const outputDir: string = path.join(fileRootPath, 'output');
-          // file list in subfolder
-          const audioFiles: string[] = (await readdir(targetDir)).filter((ad: string) => path.parse(ad).ext == '.wav');
-
-          // filepath list
-          const filePaths: any[] = audioFiles.map((fl: string) => {
-            return path.join(fileRootPath, 'partial', dir, fl);
-          });
-
-          // over 1000
-          if (filePaths.length >= 1000) {
-            // split files
-            const chunkedArr: any[][] = ((arr, size) => arr.flatMap((_, i, a) => i % size ? [] : [a.slice(i, i + size)]))(filePaths, 500);
-            // operate each
-            for await (const [index, arr] of Object.entries(chunkedArr)) {
-              // partial output path
-              const partialOutPath: string = path.join(outputDir, `${dir}-${index}.wav`);
-              // merge wavs
-              await ffmpegManager.mergeAudio(arr, partialOutPath, 10000, 1024 * 1024 * 1024 * 5);
-            }
-          } else {
-            // output path
-            const outputPath: string = path.join(outputDir, `${dir}.wav`);
-            // merge wavs
-            await ffmpegManager.mergeAudio(filePaths, outputPath, 10000, 1024 * 1024 * 1024 * 5);
-          }
-          resolve1();
-
-        } catch (error: unknown) {
-          // error
-          logger.error(error);
-          // error
-          if (error instanceof Error) {
-            // status
-            event.sender.send('errorUpdate', error);
-          }
-        }
-      });
-    }));
-    // status message
-    let finishedMessage: string = '';
-    // switch on language
-    if (language == 'japanese') {
-      // set finish message
-      finishedMessage = '完了しました';
-    } else {
-      // set finish message
-      finishedMessage = 'Finished.';
-    }
-    // status
-    event.sender.send('statusUpdate', {
-      status: finishedMessage,
-      target: ''
-    });
-    // finish message
-    dialogMaker.showmessage('info', finishedMessage);
-    logger.info('ipc: operation finished.');
-
-  } catch (e: unknown) {
-    logger.error(e);
-    // error
-    if (e instanceof Error) {
-      // error message
-      dialogMaker.showmessage('error', e.message);
-    }
-  }
-});
-
-// delete
-ipcMain.on('delete', async (_, __) => {
-  try {
-    logger.info('app: delete app');
-    // language
-    const language = cacheMaker.get('language') ?? 'japanese';
-    // status message
-    let finishedMessage: string = '';
-    // switch on language
-    if (language == 'japanese') {
-      // set finish message
-      finishedMessage = '完了しました';
-    } else {
-      // set finish message
-      finishedMessage = 'Finished.';
-    }
-    // finish message
-    dialogMaker.showmessage('info', finishedMessage);
-    logger.info('ipc: operation finished.');
-
-  } catch (e: unknown) {
     logger.error(e);
     // error
     if (e instanceof Error) {
