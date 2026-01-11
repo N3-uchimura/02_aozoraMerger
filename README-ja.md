@@ -46,18 +46,6 @@ Windows10 ~
 1. resources/file/partialに元のwavファイルが入ったフォルダを入れます。
 2. 「ファイル結合」を押します。
 3. resources/file/outputにフォルダ毎に変換されたwavファイルが保存されます。
-resources/
-　└ file/
-　 　├ partial/
-　　 │　 ├ target1/
-　　 │　 │　　├ target1-1.wav
-　　 │　 │　　└ target1-2.wav
-　　 │　 └ target2/
-　　 │　　　　├ target2-1.wav
-　　 │　　　　└ target2-2.wav
-　　 └ output/
-　　　　 ├ target1.wav
-　　　　 └ target2.wav
 
 ## Features
 

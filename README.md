@@ -42,18 +42,6 @@ Windows10 ~
 1. put some wav files into resources/file/partial
 2. Press "Merge" button.
 3. merged wav files are restored to resources/file/output.
-resources/
-　└ file/
-　 　├ partial/
-　　 │　 ├ target1/
-　　 │　 │　　├ target1-1.wav
-　　 │　 │　　└ target1-2.wav
-　　 │　 └ target2/
-　　 │　　　　├ target2-1.wav
-　　 │　　　　└ target2-2.wav
-　　 └ output/
-　　　　 ├ target1.wav
-　　　　 └ target2.wav
 
 ## Features
 
