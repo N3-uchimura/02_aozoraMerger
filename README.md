@@ -13,7 +13,8 @@ aozoraMerger
 
 ## Overview
 
-This is merge which merge wavs.
+- This is merge which merge wavs.
+- Ffmpeg [ffmpeg](https://www.ffmpeg.org/download.html) should be installed.
 
 ## Requirement
 

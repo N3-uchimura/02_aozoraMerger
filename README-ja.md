@@ -14,6 +14,7 @@
 ## Overview
 
 - フォルダ内の WAV ファイルを結合します。
+- 予めffmpeg [ffmpeg](https://www.ffmpeg.org/download.html).のインストールが必要です。
 
 ## Requirement
 
