@@ -14,11 +14,12 @@ aozoraMerger
 ## Overview
 
 - This is merge which merge wavs.
-- Ffmpeg [ffmpeg](https://www.ffmpeg.org/download.html) should be installed.
+
 
 ## Requirement
 
-Windows10 ~
+- Windows10 ~
+- Ffmpeg [ffmpeg](https://www.ffmpeg.org/download.html) should be installed.
 
 ## Setting
 
