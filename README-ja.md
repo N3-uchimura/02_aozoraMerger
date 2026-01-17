@@ -15,7 +15,6 @@
 
 - フォルダ内の WAV ファイルを結合します。
 
-
 ## Requirement
 
 - Windows10 ~
@@ -45,9 +44,9 @@
 
 ## Usage
 
-1. resources/file/partialに元のwavファイルが入ったフォルダを入れます。
+1. resources/file/partialに元のwavファイルが入ったフォルダを入れます。(例:resources/file/partial/xxx/yyy.wav)
 2. 「ファイル結合」を押します。
-3. resources/file/outputにフォルダ毎に変換されたwavファイルが保存されます。
+3. resources/file/outputにフォルダ毎に変換されたwavファイルが保存されます。(例:resources/file/partial/xxx.wav)
 
 ## Features
 

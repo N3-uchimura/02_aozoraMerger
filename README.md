@@ -15,7 +15,6 @@ aozoraMerger
 
 - This is merge which merge wavs.
 
-
 ## Requirement
 
 - Windows10 ~
@@ -41,9 +40,9 @@ aozoraMerger
 
 ## Usage
 
-1. put some wav files into resources/file/partial
+1. put some wav files into resources/file/partial/xxx/yyy.wav
 2. Press "Merge" button.
-3. merged wav files are restored to resources/file/output.
+3. merged wav files are restored to resources/file/output/xxx.wav.
 
 ## Features
 
