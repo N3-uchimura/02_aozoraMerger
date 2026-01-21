@@ -44,6 +44,11 @@
 
 ## Usage
 
+0. デフォルトのルートフォルダは
+
+- 全体インストール：「C:\Program Files\aozoraeditor」
+- ユーザインストール：「C:\Users\xxxx\AppData\Local\Programs\aozoraeditor」です。
+
 1. resources/file/partialに元のwavファイルが入ったフォルダを入れます。(例:resources/file/partial/xxx/yyy.wav)
 2. 「ファイル結合」を押します。
 3. resources/file/outputにフォルダ毎に変換されたwavファイルが保存されます。(例:resources/file/partial/xxx.wav)

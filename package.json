@@ -1,9 +1,10 @@
 {
   "name": "aozora-merger",
   "productName": "aozora-merger",
-  "version": "1.0.0",
+  "version": "1.0.1-alpha.1",
   "description": "application for recording aozora books.",
-  "main": "build/aozoramerger.js",  "scripts": {
+  "main": "build/aozoramerger.js",
+  "scripts": {
     "build": "tsc && chcp 65001",
     "start": "npm run build && electron .",
     "build-win": "npm run build && electron-builder --win --x64"
@@ -23,8 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.9",
-    "electron": "^38.5.0",
-    "electron-builder": "^26.0.12"
+    "electron": "^38.5.0"
   },
   "build": {
     "appId": "net.numthree.aozoramerger",
