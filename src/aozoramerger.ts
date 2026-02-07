@@ -13,14 +13,14 @@ import { myConst, myNums } from './consts/globalvariables';
 /// Modules
 import * as path from 'node:path'; // path
 import { existsSync } from 'node:fs'; // file system
-import { readFile, writeFile, readdir, cp } from 'node:fs/promises'; // file system (Promise)
+import { readFile, writeFile, readdir, cp } from 'node:fs/promises'; // promise fs
+import { exec } from 'child_process'; // child process
 import { BrowserWindow, app, ipcMain, Tray, Menu, nativeImage } from 'electron'; // electron
 import NodeCache from "node-cache"; // node-cache
 import ELLogger from './class/ElLogger'; // logger
 import Dialog from './class/ElDialog0721'; // dialog
 import FileManage from './class/ELFileManage1025'; // file operation
 import Ffmpeg from './class/ElFfmpeg'; // mdkir
-
 // log level
 const LOG_LEVEL: string = myConst.LOG_LEVEL ?? 'all';
 // loggeer instance
@@ -90,16 +90,6 @@ const createWindow = (): void => {
       }
     });
 
-    // stay at tray
-    mainWindow.on('will-resize', (event: any): void => {
-      // avoid Wclick
-      event.preventDefault();
-      // hide window
-      mainWindow.hide();
-      // returnfalse
-      event.returnValue = false;
-    });
-
     // close window
     mainWindow.on('close', (event: any): void => {
       // not closing
@@ -166,7 +156,7 @@ app.on('ready', async () => {
     // make file dir
     await fileManager.mkDirAll([path.join(fileRootPath, 'output'), path.join(fileRootPath, 'backup'), path.join(fileRootPath, 'partial')]);
     // icons
-    const icon: Electron.NativeImage = nativeImage.createFromPath(path.join(globalRootPath, 'assets', 'aozora.ico'));
+    const icon: Electron.NativeImage = nativeImage.createFromPath(path.join(globalRootPath, 'assets', 'aozoramerge.ico'));
     // tray
     const mainTray: Electron.Tray = new Tray(icon);
     // context menu
@@ -236,6 +226,27 @@ ipcMain.on("beforeready", async (event: any, _) => {
   event.sender.send("ready", {
     language: language,
   });
+});
+
+// open
+ipcMain.on('open', async (_: any, __: any): Promise<void> => {
+  try {
+    logger.info('app: open dir');
+    // switch on OS
+    const command = process.platform === 'win32' ? `explorer "${fileRootPath}"` :
+      process.platform === 'darwin' ? `open "${fileRootPath}"` :
+        `xdg-open "${fileRootPath}"`;
+    // open root dir
+    exec(command);
+
+  } catch (e: unknown) {
+    logger.error(e);
+    // error
+    if (e instanceof Error) {
+      // error message
+      dialogMaker.showmessage('error', e.message);
+    }
+  }
 });
 
 // merge
