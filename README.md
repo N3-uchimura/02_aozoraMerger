@@ -42,12 +42,12 @@ aozoraMerger
 
 0. Press "OpenDir" and resouces directory below will be opened.
 
-- all：「C:\Program Files\aozoraeditor」
-- user：「C:\Users\xxxx\AppData\Local\Programs\aozoraeditor」
+- all：「C:\Program Files\aozoraeditor\resources\file」
+- user：「C:\Users\xxxx\AppData\Local\Programs\aozoraeditor\resources\file」
 
-1. put some wav files into resources/file/partial/xxx/yyy.wav
+1. put some wav files into resources\file\partial\xxx\yyy.wav
 2. Press "Merge" button.
-3. merged wav files are restored to resources/file/output/xxx.wav.
+3. merged wav files are restored to resources\file\output\xxx.wav.
 
 ## Features
 

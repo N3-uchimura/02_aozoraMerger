@@ -3,7 +3,7 @@
  *
  * ElFfmpeg
  * ElFfmpeg operation for electron
- * updated: 2025/08/24
+ * updated: 2026/02/21
  **/
 
 'use strict';

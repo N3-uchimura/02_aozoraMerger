@@ -46,12 +46,12 @@
 
 0. 「フォルダ開く」を押すと下記のフォルダが開きます。
 
-- 全体インストール：「C:\Program Files\aozoraeditor」
-- ユーザインストール：「C:\Users\xxxx\AppData\Local\Programs\aozoraeditor」です。
+- 全体インストール：「C:\Program Files\aozoraeditor\resources\file」
+- ユーザインストール：「C:\Users\xxxx\AppData\Local\Programs\aozoraeditor\resources\file」です。
 
-1. resources/file/partialに元のwavファイルが入ったフォルダを入れます。(例:resources/file/partial/xxx/yyy.wav)
+1. resources\file\partialに元のwavファイルが入ったフォルダを入れます。(例:resources\file\partial\xxx\yyy.wav)
 2. 「ファイル結合」を押します。
-3. resources/file/outputにフォルダ毎に変換されたwavファイルが保存されます。(例:resources/file/partial/xxx.wav)
+3. resources\file\outputにフォルダ毎に変換されたwavファイルが保存されます。(例:resources\file\partial\xxx.wav)
 
 ## Features
 

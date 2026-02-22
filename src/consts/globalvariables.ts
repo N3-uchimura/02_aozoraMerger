@@ -5,7 +5,7 @@
 **/
 
 /** const */
-// default
+// consts
 export namespace myConst {
   export const DEVMODE: boolean = true;
   export const COMPANY_NAME: string = "nthree";
@@ -14,7 +14,7 @@ export namespace myConst {
   export const DEFAULT_ENCODING: string = "utf8";
 }
 
-// default
+// nums
 export namespace myNums {
   export const WINDOW_WIDTH: number = 600;
   export const WINDOW_HEIGHT: number = 1000;

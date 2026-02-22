@@ -18,7 +18,7 @@ import { exec } from 'child_process'; // child process
 import { BrowserWindow, app, ipcMain, Tray, Menu, nativeImage } from 'electron'; // electron
 import NodeCache from "node-cache"; // node-cache
 import ELLogger from './class/ElLogger'; // logger
-import Dialog from './class/ElDialog0721'; // dialog
+import Dialog from './class/ElDialog1124'; // dialog
 import FileManage from './class/ELFileManage1025'; // file operation
 import Ffmpeg from './class/ElFfmpeg'; // mdkir
 // log level
